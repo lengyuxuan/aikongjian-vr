@@ -1,9 +1,0 @@
-{
-  "name": "爱空间-VR",
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "assets": {
-    "directory": "./dist",       // 指定你的静态资源目录
-    "notFoundStrategy": "singlePageApplication"
-  }
-}

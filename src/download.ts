@@ -58,6 +58,7 @@ function formatBytes(bytes: number): string {
 type Phase = 'idle' | 'loading' | 'downloading' | 'packing' | 'done' | 'error';
 
 interface JsonLike {
+  code: number;
   base_url?: unknown;
   model?: {
     file_url?: unknown;
@@ -156,6 +157,17 @@ $app.innerHTML = `
           </button>
         </div>
         <p class="packer__hint">下载可能需要些时间，请耐心等待...</p>
+        <label class="packer__label packer__label--code" for="src-code">兑换码</label>
+        <div class="packer__row packer__row--code">
+          <input
+            id="src-code"
+            class="packer__input"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="粘贴兑换码（选填）"
+          />
+        </div>
       </form>
 
       <ol class="steps" aria-label="下载流程">
@@ -209,6 +221,7 @@ $app.innerHTML = `
 // DOM references
 const form = $<HTMLFormElement>('.packer');
 const input = $<HTMLInputElement>('#src-url');
+const codeInput = $<HTMLInputElement>('#src-code');
 const submitBtn = $<HTMLButtonElement>('.packer__submit');
 const submitText = $<HTMLSpanElement>('.packer__submit-text');
 const body = document.body;
@@ -482,7 +495,7 @@ function resetManifest(): void {
   manifestList.innerHTML = '';
 }
 
-async function run(url: string): Promise<void> {
+async function run(url: string, code: string): Promise<void> {
   resetState();
   resetManifest();
   progressFill.style.width = '0%';
@@ -492,9 +505,18 @@ async function run(url: string): Promise<void> {
 
   let json: JsonLike;
   try {
-    const res = await fetch(`https://aikongjian.fangjin.life/parse?url=${encodeURIComponent(url)}`, { headers: { Accept: 'application/json' } });
+    const res = await fetch(
+      `https://aikongjian.fangjin.life/parse?url=${encodeURIComponent(url)}&code=${encodeURIComponent(code)}`,
+      { headers: { Accept: 'application/json' } },
+    );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     json = (await res.json()) as JsonLike;
+    console.log(json, '****')
+    if (json.code === 403) {
+      setPhase('error', 1);
+      showError('兑换码无效');
+      return;
+    }
   } catch (error) {
     setPhase('error', 1);
     showError(describeError(error, url));
@@ -571,7 +593,12 @@ form.addEventListener('submit', (event) => {
     input.focus();
     return;
   }
-  void run(url);
+  const code = codeInput.value.trim();
+  if (!code) {
+    codeInput.focus();
+    return;
+  }
+  void run(url, code);
 });
 
 resultCopy.addEventListener('click', async () => {
@@ -592,6 +619,7 @@ resultAgain.addEventListener('click', () => {
   progressLabel.textContent = '等待开始';
   setPhase('idle');
   input.value = '';
+  codeInput.value = '';
   input.focus();
 });
 
@@ -602,6 +630,7 @@ errorAgain.addEventListener('click', () => {
   progressLabel.textContent = '等待开始';
   setPhase('idle');
   input.value = '';
+  codeInput.value = '';
   input.focus();
 });
 

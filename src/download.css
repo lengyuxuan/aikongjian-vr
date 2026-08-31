@@ -252,6 +252,14 @@ body {
   color: var(--muted);
 }
 
+.packer__label--code {
+  margin-top: 18px;
+}
+
+.packer__row--code {
+  margin-top: 0;
+}
+
 .packer__local {
   display: flex;
   align-items: flex-start;

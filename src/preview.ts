@@ -53,7 +53,7 @@ $app.innerHTML = `
         <span class="brand__mark" aria-hidden="true"></span>
         <span class="brand__name">VR Preview</span>
       </div>
-      <a class="preview__back" href="./download.html">← 打包工具</a>
+      <a class="preview__back" href="./">← 打包工具</a>
     </header>
 
     <main class="preview__body">

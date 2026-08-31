@@ -492,7 +492,7 @@ async function run(url: string): Promise<void> {
 
   let json: JsonLike;
   try {
-    const res = await fetch(`http://localhost:3000/parse?url=${encodeURIComponent(url)}`, { headers: { Accept: 'application/json' } });
+    const res = await fetch(`https://aikongjian.fangjin.life/parse?url=${encodeURIComponent(url)}`, { headers: { Accept: 'application/json' } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     json = (await res.json()) as JsonLike;
   } catch (error) {

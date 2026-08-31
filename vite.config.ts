@@ -5,8 +5,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        download: resolve(__dirname, 'download.html'),
+        index: resolve(__dirname, 'index.html'),
         preview: resolve(__dirname, 'preview.html'),
       },
     },

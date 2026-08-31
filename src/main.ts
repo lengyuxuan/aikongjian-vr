@@ -58,3 +58,10 @@ five.on('modeChange', (mode) => {
 $button.classList.add('btn');
 
 $app.appendChild($button);
+
+// 链接到素材打包工具
+const $toolLink = document.createElement('a');
+$toolLink.href = './download.html';
+$toolLink.textContent = '打包工具';
+$toolLink.classList.add('tool-link');
+$app.appendChild($toolLink);

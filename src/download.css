@@ -90,6 +90,12 @@ body {
   text-transform: uppercase;
 }
 
+.archiver__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+}
+
 .archiver__back {
   color: var(--muted);
   font-size: 14px;
@@ -102,6 +108,26 @@ body {
 .archiver__back:focus-visible {
   color: var(--text);
   border-color: var(--accent);
+}
+
+.archiver__link {
+  font-size: 14px;
+  font-weight: 600;
+  color: #141008;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  transition: filter 0.15s ease, transform 0.08s ease;
+}
+
+.archiver__link:hover,
+.archiver__link:focus-visible {
+  filter: brightness(1.05);
+}
+
+.archiver__link:active {
+  transform: translateY(1px);
 }
 
 /* ------------------------------------------------------------------ */

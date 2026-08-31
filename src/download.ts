@@ -127,20 +127,21 @@ $app.innerHTML = `
         <span class="brand__mark" aria-hidden="true"></span>
         <span class="brand__name">VR Bundle Archiver</span>
       </div>
-      <a class="archiver__back" href="./index.html">← 返回查看器</a>
+      <nav class="archiver__nav">
+        <a class="archiver__link" href="./preview.html">预览场景 →</a>
+      </nav>
     </header>
 
     <main class="archiver__card">
       <section class="hero">
-        <h1 class="hero__title">把远程 VR 场景抓下来</h1>
+        <h1 class="hero__title">远程 VR 场景抓取</h1>
         <p class="hero__lede">
-          粘贴 <code>work.json</code> 的远程地址，读取素材清单，逐一抓取全部文件，
-          并打包成一个<strong>可按原目录结构解压</strong>的 zip。
+          粘贴 VR 项目分享链接
         </p>
       </section>
 
       <form class="packer" autocomplete="off">
-        <label class="packer__label" for="src-url">远程 work.json 地址</label>
+        <label class="packer__label" for="src-url">VR地址</label>
         <div class="packer__row">
           <input
             id="src-url"
@@ -148,17 +149,13 @@ $app.innerHTML = `
             type="url"
             inputmode="url"
             spellcheck="false"
-            placeholder="https://example.com/path/work.json"
+            placeholder="https://realsee.ikongjian.com/vr/xxxx?aid=0&platform=60&sourceNo=xxx&t=xxx&uid=xxx&gdt_vid=0"
           />
           <button class="packer__submit" type="submit">
-            <span class="packer__submit-text">提取素材</span>
+            <span class="packer__submit-text">提取 VR 数据</span>
           </button>
         </div>
-        <label class="packer__local">
-          <input id="local-base" type="checkbox" checked />
-          <span>打包为本地可用：把 JSON 里的 <code>base_url</code> 改写为 <code>./vr</code></span>
-        </label>
-        <p class="packer__hint">要点：该地址需允许跨域访问（CORS）；资源路径以 JSON 内的 base_url 为准。打包时会一并放入 <code>work.json</code>（位于 zip 根目录，与 <code>vr/</code> 同级）。</p>
+        <p class="packer__hint">下载可能需要些时间，请耐心等待...</p>
       </form>
 
       <ol class="steps" aria-label="下载流程">
@@ -212,7 +209,6 @@ $app.innerHTML = `
 // DOM references
 const form = $<HTMLFormElement>('.packer');
 const input = $<HTMLInputElement>('#src-url');
-const localBase = $<HTMLInputElement>('#local-base');
 const submitBtn = $<HTMLButtonElement>('.packer__submit');
 const submitText = $<HTMLSpanElement>('.packer__submit-text');
 const body = document.body;
@@ -435,7 +431,7 @@ async function downloadAll(paths: string[]): Promise<void> {
 // "local" option is on, base_url is rewritten to ./vr so the extracted bundle
 // (work.json + vr/) is immediately playable offline, like the bundled example.
 function buildWorkJsonEntry(): ZipEntry {
-  const json = localBase.checked ? { ...currentJson, base_url: './vr' } : currentJson;
+  const json = currentJson;
   return {
     path: 'work.json',
     data: new TextEncoder().encode(JSON.stringify(json, null, 2)),
@@ -496,7 +492,7 @@ async function run(url: string): Promise<void> {
 
   let json: JsonLike;
   try {
-    const res = await fetch(url, { headers: { Accept: 'application/json' } });
+    const res = await fetch(`http://localhost:3000/parse?url=${encodeURIComponent(url)}`, { headers: { Accept: 'application/json' } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     json = (await res.json()) as JsonLike;
   } catch (error) {
